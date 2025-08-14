@@ -1,0 +1,6 @@
+#include "../src/Rendering/Renderer.cpp"
+#include "../src/Rendering/ResourceManager.cpp"
+#include "../src/Rendering/Material.cpp"
+#include "../src/Rendering/Texture.cpp"
+#include "../src/Rendering/Shader.cpp"
+#include "../src/Rendering/Mesh.cpp"
