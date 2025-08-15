@@ -1,6 +1,6 @@
 # Geo Engine
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: 🏴‍☠️](https://img.shields.io/badge/License-🏴‍☠️-black?style=flat-square)](LICENSE)
 [![C++](https://img.shields.io/badge/Language-C%2B%2B-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B)
 [![CMake](https://img.shields.io/badge/Build-CMake-brightgreen.svg)](https://cmake.org/)
 
@@ -34,8 +34,7 @@ A simple, lightweight OpenGL ECS game engine library implemented in C++.
 
 ```bash
 # Clone GeoEngine to your game project
-cd MyGame
-git clone <repo-url> GeoEngine
+git clone https://github.com/OO0oo0oOOooo/GeoEngine.git
 ```
 
 Add to your `CMakeLists.txt`:
