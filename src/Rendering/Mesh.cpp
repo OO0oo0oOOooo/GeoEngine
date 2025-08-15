@@ -1,7 +1,7 @@
 #include "Mesh.h"
 
-#include "src/Rendering/RenderCommand.h"
-#include "src/Rendering/Renderer.h"
+#include "RenderCommand.h"
+#include "Renderer.h"
 
 void mesh_create_static(mesh* mesh, const uint8_t* vdata, uint32_t vsize, const uint8_t* idata,
                         uint32_t isize, uint32_t icount) {

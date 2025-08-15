@@ -1,11 +1,11 @@
 #include "Scene.h"
 
-#include "glm/fwd.hpp"
-#include "src/Core/Components/Transform.h"
-#include "src/Rendering/Material.h"
-#include "src/Rendering/Mesh.h"
-#include "src/Rendering/RenderCommand.h"
-#include "src/Rendering/ResourceManager.h"
+// #include "glm/fwd.hpp"
+// #include "src/Core/Components/Transform.h"
+#include "../Rendering/Material.h"
+#include "../Rendering/Mesh.h"
+#include "../Rendering/RenderCommand.h"
+#include "../Rendering/ResourceManager.h"
 
 void Scene::Start() {}
 void Scene::Update() {}

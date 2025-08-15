@@ -1,11 +1,10 @@
 #pragma once
 
-#include "src/Core/Components/Camera.h"
-#include "src/Rendering/Renderer.h"
-
-#include "src/Util/SparseSet.h"
-#include "src/Core/Components/Renderable.h"
-#include "src/Core/Components/Transform.h"
+#include "../Rendering/Renderer.h"
+#include "../Util/SparseSet.h"
+#include "Components/Camera.h"
+#include "Components/Renderable.h"
+#include "Components/Transform.h"
 
 class Scene {
    public:

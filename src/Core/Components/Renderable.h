@@ -1,6 +1,6 @@
 #pragma once
 
-#include "src/Rendering/ResourceHandle.h"
+#include "../../Rendering/ResourceHandle.h"
 
 struct renderable {
     resource_handle mesh_handle;

@@ -1,6 +1,6 @@
 #include "Camera.h"
 
-#include "src/Events/EventManager.h"
+#include "../../Events/EventManager.h"
 
 Camera::Camera() {
     m_Position = glm::vec3(0.0f, 0.0f, 0.0f);

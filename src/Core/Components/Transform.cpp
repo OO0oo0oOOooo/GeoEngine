@@ -1,7 +1,7 @@
 #include "Transform.h"
 
-#include "glm/gtc/matrix_inverse.hpp"
-// #include "glm/ext/matrix_transform.hpp"
+
+#include <glm/gtc/matrix_inverse.hpp>
 
 glm::mat4 transform_get_matrix(transform* transform) {
     if (transform->matrix_dirty) {

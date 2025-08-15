@@ -1,11 +1,11 @@
 #include "SceneManager.h"
 
-#include "glm/fwd.hpp"
-#include "src/Core/Components/Renderable.h"
-#include "src/Core/Components/Transform.h"
-#include "src/Rendering/ResourceHandle.h"
-#include "src/Rendering/ResourceManager.h"
-#include "src/Rendering/Vertex.h"
+// #include "glm/fwd.hpp"
+#include "Components/Renderable.h"
+#include "Components/Transform.h"
+#include "../Rendering/ResourceHandle.h"
+#include "../Rendering/ResourceManager.h"
+#include "../Rendering/Vertex.h"
 
 SceneManager::SceneManager() {
     ResourceManager::Init();

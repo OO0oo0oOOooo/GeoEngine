@@ -2,6 +2,7 @@
 
 #include <cstring>
 
+// TODO: use <> include
 #include "stb_image/stb_image.h"
 
 void texture_init(texture* tex, size_t width, size_t height, uint8_t* buffer) {
