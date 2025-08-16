@@ -15,6 +15,7 @@ camera camera_init(glm::vec3 position, glm::quat rotation, float near_plane, flo
         .view_matrix = v,
         .projection_matrix = p,
         .cached_vp_matrix = p * v,
+        .matrix_dirty = false,
     };
 
     return cam;
@@ -36,6 +37,6 @@ void set_window_size(void* context, void* data) {
     edata8_u* event = (edata8_u*)data;
     float width = event->f[0];
     float height = event->f[1];
-
     cam->projection_matrix = glm::ortho(0.0f, width, 0.0f, height, cam->near_plane, cam->far_plane);
+    cam->matrix_dirty = true;
 }

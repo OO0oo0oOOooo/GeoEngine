@@ -12,26 +12,17 @@ Renderer::~Renderer() {
 }
 
 void Renderer::RenderMesh(const render_command& cmd) {
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
     glBindBuffer(GL_ARRAY_BUFFER, cmd.vertex_buffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cmd.index_buffer);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)0);
-    glEnableVertexAttribArray(0);
-
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)12);
-    glEnableVertexAttribArray(1);
-
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)28);
-    glEnableVertexAttribArray(2);
-
-    // for (uint32_t i = 0; i < cmd.layout.attribute_count; i++) {
-    //     const auto& attr = cmd.layout.attributes[i];
-    //     glVertexAttribPointer(attr.location, attr.component_count, attr.type, attr.normalized,
-    //                           cmd.layout.stride, (void*)attr.offset);
-    //     glEnableVertexAttribArray(attr.location);
-    // }
+    for (uint32_t i = 0; i < cmd.layout.attribute_count; i++) {
+        const auto& attr = cmd.layout.attributes[i];
+        glVertexAttribPointer(attr.location, attr.component_count, attr.type, attr.normalized,
+                              cmd.layout.stride, (void*)attr.offset);
+        glEnableVertexAttribArray(attr.location);
+    }
 
     glDrawElements(GL_TRIANGLES, cmd.index_count, GL_UNSIGNED_INT,
                    (void*)(cmd.index_offset * sizeof(uint32_t)));

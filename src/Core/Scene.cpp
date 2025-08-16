@@ -1,7 +1,5 @@
 #include "Scene.h"
 
-// #include "glm/fwd.hpp"
-// #include "src/Core/Components/Transform.h"
 #include "../Rendering/Material.h"
 #include "../Rendering/Mesh.h"
 #include "../Rendering/RenderCommand.h"
