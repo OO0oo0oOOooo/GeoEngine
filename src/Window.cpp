@@ -2,7 +2,6 @@
 
 #include "Events/Broadcast.h"
 #include "Events/EventDefs.h"
-#include "Events/EventManager.h"
 
 Window::Window() {
     Init();
@@ -49,77 +48,78 @@ void Window::Init() {
         win->SetHeight(height);
         win->SetWidth(width);
         glViewport(0, 0, width, height);
-        // EventManager::GetInstance().WindowResizeEvent(width, height);
 
         edata8_u resize_data;
         resize_data.f[0] = (float)width;
         resize_data.f[1] = (float)height;
         SystemEvents::broadcast(EVENT_WINDOW_RESIZE, &resize_data);
-
     });
 
-    glfwSetWindowCloseCallback(
-        m_NativeWindow, [](GLFWwindow* window) { EventManager::GetInstance().WindowCloseEvent(); });
+    glfwSetWindowCloseCallback(m_NativeWindow, [](GLFWwindow* window) {
+        SystemEvents::broadcast(EVENT_WINDOW_CLOSE, nullptr);
+    });
 
-    glfwSetKeyCallback(m_NativeWindow,
-                       [](GLFWwindow* window, int key, int scancode, int action, int mods) {
-                           Window* win = static_cast<Window*>(glfwGetWindowUserPointer(window));
+    glfwSetKeyCallback(m_NativeWindow, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
+        Window* win = static_cast<Window*>(glfwGetWindowUserPointer(window));
 
-                           EventManager::GetInstance().KeyEvent(key, scancode, action, mods);
+        edata16_u keyData;
+        keyData.i[0] = key;
+        keyData.i[1] = scancode;
+        keyData.i[2] = action;
+        keyData.i[3] = mods;
+        SystemEvents::broadcast(EVENT_KEY_BUTTON, &keyData);
 
-                           switch (action) {
-                               case GLFW_PRESS:
-                                   EventManager::GetInstance().KeyDownEvent(key);
-                                   break;
-                               case GLFW_RELEASE:
-                                   EventManager::GetInstance().KeyUpEvent(key);
-                                   break;
-                               case GLFW_REPEAT:
-                                   EventManager::GetInstance().KeyRepeatEvent(key);
-                                   break;
-                           }
+        edata4_u keyId;
+        keyId.i[0] = key;
+        switch (action) {
+            case GLFW_PRESS:
+                SystemEvents::broadcast(EVENT_KEY_BUTTON_DOWN, &keyId);
+                break;
+            case GLFW_RELEASE:
+                SystemEvents::broadcast(EVENT_KEY_BUTTON_UP, &keyId);
+                break;
+            case GLFW_REPEAT:
+                SystemEvents::broadcast(EVENT_KEY_BUTTON_REPEAT, &keyId);
+                break;
+        }
+    });
 
-                           if (key == GLFW_KEY_ESCAPE) {
-                               win->Close();
-                           }
-                       });
+    glfwSetMouseButtonCallback(m_NativeWindow, [](GLFWwindow* window, int key, int action, int mods) {
+        edata16_u keyData;
+        keyData.i[0] = key;
+        keyData.i[1] = action;
+        keyData.i[2] = mods;
+        SystemEvents::broadcast(EVENT_MOUSE_BUTTON, &keyData);
 
-    glfwSetMouseButtonCallback(
-        m_NativeWindow, [](GLFWwindow* window, int button, int action, int mods) {
-            EventManager::GetInstance().MouseButtonEvent(button, action, mods);
-
-            switch (action) {
-                case GLFW_PRESS:
-                    EventManager::GetInstance().MouseButtonDownEvent(button);
-                    break;
-                case GLFW_RELEASE:
-                    EventManager::GetInstance().MouseButtonUpEvent(button);
-                    break;
-                case GLFW_REPEAT:
-                    EventManager::GetInstance().MouseButtonRepeatEvent(button);
-                    break;
-            }
-        });
+        edata4_u keyId;
+        keyId.i[0] = key;
+        switch (action) {
+            case GLFW_PRESS:
+                SystemEvents::broadcast(EVENT_MOUSE_BUTTON_DOWN, &keyId);
+                break;
+            case GLFW_RELEASE:
+                SystemEvents::broadcast(EVENT_MOUSE_BUTTON_UP, &keyId);
+                break;
+            case GLFW_REPEAT:
+                SystemEvents::broadcast(EVENT_MOUSE_BUTTON_REPEAT, &keyId);
+                break;
+        }
+    });
 
     glfwSetCursorPosCallback(m_NativeWindow, [](GLFWwindow* window, double xpos, double ypos) {
         Window* win = static_cast<Window*>(glfwGetWindowUserPointer(window));
-
-        EventManager::GetInstance().MouseMoveEvent(xpos, win->GetHeight() - ypos);
+        edata16_u data;
+        data.d[0] = xpos;
+        data.d[1] = win->GetHeight() - ypos;
+        SystemEvents::broadcast(EVENT_MOUSE_MOVE, &data);
     });
 
     glfwSetScrollCallback(m_NativeWindow, [](GLFWwindow* window, double xoffset, double yoffset) {
-        EventManager::GetInstance().MouseScrollEvent(xoffset, yoffset);
+        edata16_u data;
+        data.d[0] = xoffset;
+        data.d[1] = yoffset;
+        SystemEvents::broadcast(EVENT_MOUSE_SCROLL, &data);
     });
-
-    /*glfwSetFramebufferSizeCallback(m_NativeWindow, [](GLFWwindow* window, int width, int height)
-    {
-        glViewport(0, 0, width, height);
-
-        Window* win = static_cast<Window*>(glfwGetWindowUserPointer(window));
-
-        win->m_WindowWidth = width;
-        win->m_WindowHeight = height;
-    });*/
 }
 
 void Window::Shutdown() {
