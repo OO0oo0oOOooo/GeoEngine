@@ -1,5 +1,7 @@
 #include "Window.h"
 
+#include "Events/Broadcast.h"
+#include "Events/EventDefs.h"
 #include "Events/EventManager.h"
 
 Window::Window() {
@@ -47,8 +49,13 @@ void Window::Init() {
         win->SetHeight(height);
         win->SetWidth(width);
         glViewport(0, 0, width, height);
+        // EventManager::GetInstance().WindowResizeEvent(width, height);
 
-        EventManager::GetInstance().WindowResizeEvent(width, height);
+        edata8_u resize_data;
+        resize_data.f[0] = (float)width;
+        resize_data.f[1] = (float)height;
+        SystemEvents::broadcast(EVENT_WINDOW_RESIZE, &resize_data);
+
     });
 
     glfwSetWindowCloseCallback(

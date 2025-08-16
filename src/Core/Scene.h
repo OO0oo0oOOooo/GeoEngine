@@ -27,7 +27,7 @@ class Scene {
     renderable* GetRenderable(uint32_t ent);
 
    private:
-    Camera m_ActiveCamera;
+    camera m_ActiveCamera;
 
     uint32_t m_NextEntityID = 1;
     std::vector<uint32_t> m_Entities;

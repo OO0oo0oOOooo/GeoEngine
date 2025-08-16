@@ -1,6 +1,7 @@
 #include "../src/Application.cpp"
 #include "../src/Window.cpp"
 #include "../src/Time.cpp"
+#include "../src/Events/Broadcast.cpp"
 #include "../src/Core/SceneManager.cpp"
 #include "../src/Core/Scene.cpp"
 #include "../src/Core/Components/Transform.cpp"

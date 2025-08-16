@@ -7,7 +7,14 @@
 #include "../Rendering/RenderCommand.h"
 #include "../Rendering/ResourceManager.h"
 
-void Scene::Start() {}
+#include "Events/Broadcast.h"
+#include "Events/EventDefs.h"
+
+void Scene::Start() {
+    camera_init();
+    SystemEvents::listen(EVENT_WINDOW_RESIZE, set_window_size, &m_ActiveCamera);
+}
+
 void Scene::Update() {}
 
 void Scene::Render(Renderer* renderer) {
@@ -17,26 +24,25 @@ void Scene::Render(Renderer* renderer) {
     transform* transform = GetTransform(entity);
     renderable* render_comp = GetRenderable(entity);
 
-    assert(transform);
-    assert(render_comp);
+    // assert(transform);
+    // assert(render_comp);
 
-    if (transform && render_comp) {
-        mesh* mesh = rm->GetMesh(render_comp->mesh_handle);
-        material* material = rm->GetMaterial(render_comp->material_handle);
+    for (uint32_t entity : m_Entities) {
+        if (transform && render_comp) {
+            mesh* mesh = rm->GetMesh(render_comp->mesh_handle);
+            material* material = rm->GetMaterial(render_comp->material_handle);
 
-        assert(mesh);
-        assert(material);
+            // assert(mesh);
+            // assert(material);
 
-        render_command cmd = mesh_create_render_command(mesh);
+            render_command cmd = mesh_create_render_command(mesh);
 
-        glm::mat4 vp = m_ActiveCamera.GetViewProjectionMatrix();
-        glm::mat4 m = transform_get_matrix(transform);
-        material_bind(material, vp, m);
-        renderer->RenderMesh(cmd);
+            glm::mat4 vp = get_vp_matrix(&m_ActiveCamera);
+            glm::mat4 m = transform_get_matrix(transform);
+            material_bind(material, vp, m);
+            renderer->RenderMesh(cmd);
+        }
     }
-
-    // for (uint32_t entity : m_Entities) {
-    // }
 }
 
 uint32_t Scene::CreateEntity() {

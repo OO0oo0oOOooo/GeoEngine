@@ -1,6 +1,5 @@
 #include "SceneManager.h"
 
-// #include "glm/fwd.hpp"
 #include "Components/Renderable.h"
 #include "Components/Transform.h"
 #include "../Rendering/ResourceHandle.h"
