@@ -37,8 +37,7 @@ void Application::Run() {
 
         {
             ImGui::Begin("FPS");
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate,
-                        io.Framerate);
+            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
             ImGui::End();
         }
 
@@ -47,4 +46,8 @@ void Application::Run() {
 
         m_Window.OnUpdate();
     }
+}
+
+Scene* Application::GetScene() {
+    return m_SceneManager.GetActiveScene();
 }

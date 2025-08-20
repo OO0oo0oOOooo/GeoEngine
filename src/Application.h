@@ -10,6 +10,7 @@ class Application {
     ~Application();
 
     void Run();
+    Scene* GetScene();
 
    private:
     Window m_Window;

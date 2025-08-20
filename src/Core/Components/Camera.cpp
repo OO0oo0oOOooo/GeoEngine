@@ -1,5 +1,8 @@
 #include "Camera.h"
 
+#include <fstream>
+#include <sstream>
+
 #include "Events/EventDefs.h"
 
 camera camera_init(glm::vec3 position, glm::quat rotation, float near_plane, float far_plane) {
@@ -39,4 +42,25 @@ void set_window_size(void* context, void* data) {
     float height = event->f[1];
     cam->projection_matrix = glm::ortho(0.0f, width, 0.0f, height, cam->near_plane, cam->far_plane);
     cam->matrix_dirty = true;
+}
+
+camera camera_load(std::string line) {
+    camera c {
+        .projection_matrix = glm::ortho(0.0f, 1920.0f, 0.0f, 1080.0f, -1.0f, 1.0f),
+        .matrix_dirty = true,
+    };
+
+    std::stringstream ss(line);
+    std::string type;
+    ss >> type >> c.position.x >> c.position.y >> c.position.z >>
+    c.rotation.w >> c.rotation.x >> c.rotation.y >> c.rotation.z >>
+    c.near_plane >> c.far_plane >> c.fov >> c.aspect_ratio;
+
+    return c;
+}
+
+void camera_save(camera* c, std::ofstream& file) {
+    file << "C " << c->position.x << " " << c->position.y << " " << c->position.z << " " 
+    << c->rotation.w << " " << c->rotation.x << " " << c->rotation.y << " " << c->rotation.z << " " 
+    << c->near_plane << " " << c->far_plane << " " << c->fov << " " << c->aspect_ratio << "\n";
 }

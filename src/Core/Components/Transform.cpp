@@ -1,5 +1,7 @@
 #include "Transform.h"
 
+#include <sstream>
+#include <fstream>
 
 #include <glm/gtc/matrix_inverse.hpp>
 
@@ -24,4 +26,24 @@ glm::vec3 transform_to_world_space(transform* transform, const glm::vec3& local_
     glm::mat4 local_to_world = transform_get_matrix(transform);
     glm::vec4 world_pos = local_to_world * glm::vec4(local_position, 1.0f);
     return glm::vec3(world_pos);
+}
+
+transform transform_load(std::string line) {
+    transform t {
+        .matrix_dirty = true,
+    };
+
+    std::stringstream ss(line);
+    std::string type;
+    ss >> type >> t.position.x >> t.position.y >> t.position.z
+    >> t.rotation.w >> t.rotation.x >> t.rotation.y >> t.rotation.z
+    >> t.scale.x >> t.scale.y >> t.scale.z;
+
+    return t;
+}
+
+void transform_save(const transform* t, std::ofstream& file) {
+    file << "T " << t->position.x << " " << t->position.y << " " << t->position.z 
+    << " " << t->rotation.w << " " << t->rotation.x << " " << t->rotation.y << " " << t->rotation.z << " " 
+    << t->scale.x << " " << t->scale.y << " " << t->scale.z << "\n";
 }

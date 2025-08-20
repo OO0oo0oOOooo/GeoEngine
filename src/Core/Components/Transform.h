@@ -14,3 +14,6 @@ struct transform {
 glm::mat4 transform_get_matrix(transform* transform);
 glm::vec3 transform_to_local_space(transform* transform, const glm::vec3& world_position);
 glm::vec3 transform_to_world_space(transform* transform, const glm::vec3& local_position);
+
+transform transform_load(std::string line);
+void transform_save(const transform* t, std::ofstream& file);

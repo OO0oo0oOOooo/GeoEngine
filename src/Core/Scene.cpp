@@ -43,6 +43,38 @@ void Scene::Render(Renderer* renderer) {
     }
 }
 
+void Scene::Load() {
+    std::string filePath = "Assets/Scene/scene0.txt";
+    std::ifstream file(filePath);
+    if (!file.is_open()) std::cerr << "Error opening Scene file: " << filePath << std::endl;
+
+    std::string line;
+    while (std::getline(file, line)) {
+        uint32_t entity = 69420;
+        if (line[0] == 'E') { entity = entity_parse_id(line); }
+        else if (line[0] == 'T') { transform t = transform_load(line); m_Transforms.Insert(entity, t); }
+        else if (line[0] == 'R') { renderable r = renderable_load(line); m_Renderables.Insert(entity, r); }
+
+
+    }
+
+    file.close();
+}
+
+void Scene::Save() {
+    std::string filePath = "Assets/Scene/scene0.txt";
+    std::ofstream file(filePath);
+    if (!file.is_open()) std::cerr << "Error opening Scene file: " << filePath << std::endl;
+    for (auto& e : m_Entities) {
+        entity_save(e, file);
+        transform_save(&m_Transforms.Get(e), file);
+        renderable_save(&m_Renderables.Get(e), file);
+    }
+
+    file.close();
+}
+
+
 uint32_t Scene::CreateEntity() {
     uint32_t entity = m_NextEntityID++;
     m_Entities.push_back(entity);
@@ -55,7 +87,7 @@ void Scene::DeleteEntity(uint32_t entity) {
     m_Entities.erase(std::remove(m_Entities.begin(), m_Entities.end(), entity), m_Entities.end());
 }
 
-void Scene::AddTransform(uint32_t ent, const transform component) {
+void Scene::AddTransform(uint32_t ent, const transform& component) {
     if (!m_Transforms.Contains(ent)) {
         m_Transforms.Insert(ent, component);
     }

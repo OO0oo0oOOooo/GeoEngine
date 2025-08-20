@@ -96,7 +96,7 @@ make
 If you want to build the engine library directly:
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/OO0oo0oOOooo/GeoEngine.git
 cd GeoEngine
 mkdir build && cd build
 cmake ..
