@@ -18,25 +18,17 @@ void Scene::Update() {}
 void Scene::Render(Renderer* renderer) {
     ResourceManager* rm = ResourceManager::GetResourceManager();
 
-    uint32_t entity = m_Entities[0];
-    transform* transform = GetTransform(entity);
-    renderable* render_comp = GetRenderable(entity);
-
-    // assert(transform);
-    // assert(render_comp);
-
     for (uint32_t entity : m_Entities) {
-        if (transform && render_comp) {
-            mesh* mesh = rm->GetMesh(render_comp->mesh_handle);
-            material* material = rm->GetMaterial(render_comp->material_handle);
+        transform* transformComp = static_cast<transform*>(GetComponent(entity, "transform"));
+        renderable* renderComp = static_cast<renderable*>(GetComponent(entity, "renderable"));
 
-            // assert(mesh);
-            // assert(material);
-
+        if (transformComp && renderComp) {
+            mesh* mesh = rm->GetMesh(renderComp->mesh_handle);
+            material* material = rm->GetMaterial(renderComp->material_handle);
             render_command cmd = mesh_create_render_command(mesh);
 
             glm::mat4 vp = get_vp_matrix(&m_ActiveCamera);
-            glm::mat4 m = transform_get_matrix(transform);
+            glm::mat4 m = transform_get_matrix(transformComp);
             material_bind(material, vp, m);
             renderer->RenderMesh(cmd);
         }
@@ -48,14 +40,26 @@ void Scene::Load() {
     std::ifstream file(filePath);
     if (!file.is_open()) std::cerr << "Error opening Scene file: " << filePath << std::endl;
 
+    uint32_t entity = 0;
     std::string line;
     while (std::getline(file, line)) {
-        uint32_t entity = 69420;
-        if (line[0] == 'E') { entity = entity_parse_id(line); }
-        else if (line[0] == 'T') { transform t = transform_load(line); m_Transforms.Insert(entity, t); }
-        else if (line[0] == 'R') { renderable r = renderable_load(line); m_Renderables.Insert(entity, r); }
+    std::stringstream ss(line);
+        std::string type;
+        ss >> type;
 
+        if (type == "E") {
+            entity = CreateEntity();
+        } else {
+            uint32_t typeID = m_Registry.StrToId(type);
+            if (typeID == m_Registry.INVALID_TYPE) {
+                continue;
+            }
 
+            if (typeID < m_Registry.m_Callbacks.size() || typeID < m_Registry.m_Components.size()) {
+                auto component = m_Registry.m_Callbacks[typeID].load_func(line);
+                m_Registry.m_Components[typeID].Insert(entity, component);
+            }
+        }
     }
 
     file.close();
@@ -65,15 +69,16 @@ void Scene::Save() {
     std::string filePath = "Assets/Scene/scene0.txt";
     std::ofstream file(filePath);
     if (!file.is_open()) std::cerr << "Error opening Scene file: " << filePath << std::endl;
-    for (auto& e : m_Entities) {
-        entity_save(e, file);
-        transform_save(&m_Transforms.Get(e), file);
-        renderable_save(&m_Renderables.Get(e), file);
+    for (const auto& entity : m_Entities) {
+        entity_save(file);
+
+        for (int i = 0; i < m_Registry.m_Components.size(); i++) {
+            m_Registry.m_Callbacks[i].save_func(m_Registry.m_Components[i].Get(entity), file);
+        }
     }
 
     file.close();
 }
-
 
 uint32_t Scene::CreateEntity() {
     uint32_t entity = m_NextEntityID++;
@@ -81,48 +86,23 @@ uint32_t Scene::CreateEntity() {
     return entity;
 }
 
-void Scene::DeleteEntity(uint32_t entity) {
-    m_Transforms.Remove(entity);
-    m_Renderables.Remove(entity);
-    m_Entities.erase(std::remove(m_Entities.begin(), m_Entities.end(), entity), m_Entities.end());
-}
 
-void Scene::AddTransform(uint32_t ent, const transform& component) {
-    if (!m_Transforms.Contains(ent)) {
-        m_Transforms.Insert(ent, component);
-    }
-}
-
-void Scene::RemoveTransform(uint32_t ent) {
-    if (m_Transforms.Contains(ent)) {
-        m_Transforms.Remove(ent);
-    }
-}
-
-transform* Scene::GetTransform(uint32_t ent) {
-    if (m_Transforms.Contains(ent)) {
-        return &m_Transforms.Get(ent);
+void* Scene::GetComponent(uint32_t entity, std::string typeName) {
+    uint32_t typeID = m_Registry.StrToId(typeName);
+    if (typeID == m_Registry.INVALID_TYPE) {
+        return nullptr;
     }
 
-    return nullptr;
+    if (typeID >= m_Registry.m_Components.size()) { return nullptr; }
+    return m_Registry.m_Components[typeID].Get(entity);
 }
 
-void Scene::AddRenderable(uint32_t ent, const renderable& component) {
-    if (!m_Renderables.Contains(ent)) {
-        m_Renderables.Insert(ent, component);
-    }
-}
-
-void Scene::RemoveRenderable(uint32_t ent) {
-    if (m_Renderables.Contains(ent)) {
-        m_Renderables.Remove(ent);
-    }
-}
-
-renderable* Scene::GetRenderable(uint32_t ent) {
-    if (m_Renderables.Contains(ent)) {
-        return &m_Renderables.Get(ent);
+void Scene::AddComponent(uint32_t entity, void* component, std::string typeName) {
+    uint32_t typeID = m_Registry.StrToId(typeName);
+    if (typeID == m_Registry.INVALID_TYPE) {
+        return;
     }
 
-    return nullptr;
+    if (typeID >= m_Registry.m_Components.size()) { return; }
+    m_Registry.m_Components[typeID].Insert(entity, component);
 }
