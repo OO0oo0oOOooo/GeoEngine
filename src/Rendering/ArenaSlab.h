@@ -14,7 +14,7 @@ struct arena_slab {
     size_t free_count;
 };
 
-inline arena_slab arena_slab_init(size_t capacity, size_t data_size, size_t alignment) {
+inline arena_slab arena_slab_init(size_t capacity, size_t data_size, size_t alignment = 16) {
     assert(capacity > 0);
     assert(data_size > 0);
     assert(alignment > 0 && (alignment & (alignment - 1)) == 0);

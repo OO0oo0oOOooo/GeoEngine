@@ -7,6 +7,7 @@
 
 #include "Events/Broadcast.h"
 #include "Events/EventDefs.h"
+#include "Util/CSparseSet.h"
 
 void Scene::Start() {
     camera_init();
@@ -19,8 +20,8 @@ void Scene::Render(Renderer* renderer) {
     ResourceManager* rm = ResourceManager::GetResourceManager();
 
     for (uint32_t entity : m_Entities) {
-        transform* transformComp = static_cast<transform*>(GetComponent(entity, "transform"));
-        renderable* renderComp = static_cast<renderable*>(GetComponent(entity, "renderable"));
+        transform* transformComp = GetComponent<transform>(entity, "transform");
+        renderable* renderComp = GetComponent<renderable>(entity, "renderable");
 
         if (transformComp && renderComp) {
             mesh* mesh = rm->GetMesh(renderComp->mesh_handle);
@@ -55,9 +56,9 @@ void Scene::Load() {
                 continue;
             }
 
-            if (typeID < m_Registry.m_Callbacks.size() || typeID < m_Registry.m_Components.size()) {
+            if (typeID < m_Registry.m_Callbacks.size() && typeID < m_Registry.m_Components.size()) {
                 auto component = m_Registry.m_Callbacks[typeID].load_func(line);
-                m_Registry.m_Components[typeID].Insert(entity, component);
+                sparse_set_insert(&m_Registry.m_Components[typeID], entity, component);
             }
         }
     }
@@ -73,7 +74,7 @@ void Scene::Save() {
         entity_save(file);
 
         for (int i = 0; i < m_Registry.m_Components.size(); i++) {
-            m_Registry.m_Callbacks[i].save_func(m_Registry.m_Components[i].Get(entity), file);
+            m_Registry.m_Callbacks[i].save_func(sparse_set_get(&m_Registry.m_Components[i], entity), file);
         }
     }
 
@@ -86,6 +87,16 @@ uint32_t Scene::CreateEntity() {
     return entity;
 }
 
+void Scene::DeleteEntity(uint32_t entity) {
+    for (sparse_set& ss : m_Registry.m_Components) {
+        void* component = sparse_set_get(&ss, entity);
+        if (component) {
+            sparse_set_remove(&ss, entity);
+        }
+    }
+
+    m_Entities.erase(std::remove(m_Entities.begin(), m_Entities.end(), entity), m_Entities.end());
+}
 
 void* Scene::GetComponent(uint32_t entity, std::string typeName) {
     uint32_t typeID = m_Registry.StrToId(typeName);
@@ -94,7 +105,7 @@ void* Scene::GetComponent(uint32_t entity, std::string typeName) {
     }
 
     if (typeID >= m_Registry.m_Components.size()) { return nullptr; }
-    return m_Registry.m_Components[typeID].Get(entity);
+    return sparse_set_get(&m_Registry.m_Components[typeID], entity);
 }
 
 void Scene::AddComponent(uint32_t entity, void* component, std::string typeName) {
@@ -104,5 +115,5 @@ void Scene::AddComponent(uint32_t entity, void* component, std::string typeName)
     }
 
     if (typeID >= m_Registry.m_Components.size()) { return; }
-    m_Registry.m_Components[typeID].Insert(entity, component);
+    sparse_set_insert(&m_Registry.m_Components[typeID], entity, component);
 }

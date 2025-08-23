@@ -28,6 +28,14 @@ glm::vec3 transform_to_world_space(transform* transform, const glm::vec3& local_
     return glm::vec3(world_pos);
 }
 
+// void transform_save(const void* data, std::ofstream& file) {
+//     const transform* t = static_cast<const transform*>(data);
+//
+//     file << "T " << t->position.x << " " << t->position.y << " " << t->position.z 
+//     << " " << t->rotation.w << " " << t->rotation.x << " " << t->rotation.y << " " << t->rotation.z << " " 
+//     << t->scale.x << " " << t->scale.y << " " << t->scale.z << "\n";
+// }
+
 transform transform_load(std::string line) {
     transform t {
         .matrix_dirty = true,
