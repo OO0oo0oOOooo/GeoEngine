@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstring>
 #include <fstream>
 #include <sstream>
 
@@ -11,16 +12,18 @@ struct renderable {
 };
 
 // TODO: cannot use old string handles
-inline renderable renderable_load(std::string line) {
+inline void renderable_load(std::string line, void* buffer) {
     renderable r {};
 
     std::stringstream ss(line);
     std::string type;
     ss >> type >> r.material_handle.handle >> r.mesh_handle.handle;
 
-    return r;
+    memcpy(buffer, &r, sizeof(renderable));
 }
 
-inline void renderable_save(renderable* r, std::ofstream& file) {
+inline void renderable_save(const void* data, std::ofstream& file) {
+    const renderable* r = static_cast<const renderable*>(data);
+
     file << "R " << r->material_handle.handle << " " << r->mesh_handle.handle << "\n";
 }

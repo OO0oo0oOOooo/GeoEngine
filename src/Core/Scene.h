@@ -28,31 +28,19 @@ class Scene {
     uint32_t CreateEntity();
     void DeleteEntity(uint32_t entity);
 
-    // TODO: could use template with typeid(T).name
+    // TODO: could use typeid(T).name
     void* GetComponent(uint32_t entity, std::string typeName);
     void AddComponent(uint32_t entity, void* component, std::string typeName);
 
-    // TODO: could use template with typeid(T).name
+    // TODO: could use typeid(T).name
     template <typename T>
     T* GetComponent(uint32_t entity, std::string typeName) {
-        uint32_t typeID = m_Registry.StrToId(typeName);
-        if (typeID == m_Registry.INVALID_TYPE) {
-            return nullptr;
-        }
-
-        if (typeID >= m_Registry.m_Components.size()) { return nullptr; }
-        return static_cast<T*>(sparse_set_get(&m_Registry.m_Components[typeID], entity));
+        return static_cast<T*>(m_Registry.GetComponent(entity, typeName));
     }
 
     template <typename T>
     void AddComponent(uint32_t entity, const T& component, std::string typeName) {
-        uint32_t typeID = m_Registry.StrToId(typeName);
-        if (typeID == m_Registry.INVALID_TYPE) {
-            return;
-        }
-
-        if (typeID >= m_Registry.m_Components.size()) { return; }
-        sparse_set_insert(&m_Registry.m_Components[typeID], entity, &component);
+        m_Registry.AddComponent(entity, &component, typeName);
     }
 
    private:

@@ -20,5 +20,5 @@ class SceneManager {
    private:
     size_t m_ActiveIndex;
     Scene* m_ActiveScene;
-    std::vector<Scene> m_Scenes;
+    std::vector<Scene*> m_Scenes;
 };

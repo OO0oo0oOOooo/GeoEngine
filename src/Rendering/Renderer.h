@@ -14,5 +14,6 @@ class Renderer {
 
    private:
     GLFWwindow* m_Window;
-    GLuint m_DummyVAO;
+    uint32_t m_DummyVAO;
+    // GLuint m_DummyVAO;
 };

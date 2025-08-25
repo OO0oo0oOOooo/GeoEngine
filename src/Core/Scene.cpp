@@ -51,15 +51,7 @@ void Scene::Load() {
         if (type == "E") {
             entity = CreateEntity();
         } else {
-            uint32_t typeID = m_Registry.StrToId(type);
-            if (typeID == m_Registry.INVALID_TYPE) {
-                continue;
-            }
-
-            if (typeID < m_Registry.m_Callbacks.size() && typeID < m_Registry.m_Components.size()) {
-                auto component = m_Registry.m_Callbacks[typeID].load_func(line);
-                sparse_set_insert(&m_Registry.m_Components[typeID], entity, component);
-            }
+            m_Registry.LoadComponent(entity, line);
         }
     }
 
@@ -72,10 +64,7 @@ void Scene::Save() {
     if (!file.is_open()) std::cerr << "Error opening Scene file: " << filePath << std::endl;
     for (const auto& entity : m_Entities) {
         entity_save(file);
-
-        for (int i = 0; i < m_Registry.m_Components.size(); i++) {
-            m_Registry.m_Callbacks[i].save_func(sparse_set_get(&m_Registry.m_Components[i], entity), file);
-        }
+        m_Registry.SaveComponents(entity, file);
     }
 
     file.close();
@@ -88,32 +77,14 @@ uint32_t Scene::CreateEntity() {
 }
 
 void Scene::DeleteEntity(uint32_t entity) {
-    for (sparse_set& ss : m_Registry.m_Components) {
-        void* component = sparse_set_get(&ss, entity);
-        if (component) {
-            sparse_set_remove(&ss, entity);
-        }
-    }
-
+    m_Registry.RemoveAllComponents(entity);
     m_Entities.erase(std::remove(m_Entities.begin(), m_Entities.end(), entity), m_Entities.end());
 }
 
 void* Scene::GetComponent(uint32_t entity, std::string typeName) {
-    uint32_t typeID = m_Registry.StrToId(typeName);
-    if (typeID == m_Registry.INVALID_TYPE) {
-        return nullptr;
-    }
-
-    if (typeID >= m_Registry.m_Components.size()) { return nullptr; }
-    return sparse_set_get(&m_Registry.m_Components[typeID], entity);
+    return m_Registry.GetComponent(entity, typeName);
 }
 
 void Scene::AddComponent(uint32_t entity, void* component, std::string typeName) {
-    uint32_t typeID = m_Registry.StrToId(typeName);
-    if (typeID == m_Registry.INVALID_TYPE) {
-        return;
-    }
-
-    if (typeID >= m_Registry.m_Components.size()) { return; }
-    sparse_set_insert(&m_Registry.m_Components[typeID], entity, component);
+    m_Registry.AddComponent(entity, component, typeName);
 }

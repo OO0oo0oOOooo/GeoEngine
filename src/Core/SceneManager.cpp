@@ -8,7 +8,9 @@
 
 SceneManager::SceneManager() {
     ResourceManager::Init();
-    m_ActiveScene = new Scene;
+    Scene* scene = new Scene();
+    m_ActiveScene = scene;
+    m_Scenes.push_back(scene);
 }
 
 SceneManager::~SceneManager() {

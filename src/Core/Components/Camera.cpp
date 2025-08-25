@@ -1,5 +1,6 @@
 #include "Camera.h"
 
+#include <cstring>
 #include <fstream>
 #include <sstream>
 
@@ -44,7 +45,7 @@ void set_window_size(void* context, void* data) {
     cam->matrix_dirty = true;
 }
 
-camera camera_load(std::string line) {
+void camera_load(std::string line, void* buffer) {
     camera c {
         .projection_matrix = glm::ortho(0.0f, 1920.0f, 0.0f, 1080.0f, -1.0f, 1.0f),
         .matrix_dirty = true,
@@ -56,10 +57,12 @@ camera camera_load(std::string line) {
     c.rotation.w >> c.rotation.x >> c.rotation.y >> c.rotation.z >>
     c.near_plane >> c.far_plane >> c.fov >> c.aspect_ratio;
 
-    return c;
+    memcpy(buffer, &c, sizeof(camera));
 }
 
-void camera_save(camera* c, std::ofstream& file) {
+void camera_save(const void* data, std::ofstream& file) {
+    const camera* c = static_cast<const camera*>(data);
+
     file << "C " << c->position.x << " " << c->position.y << " " << c->position.z << " " 
     << c->rotation.w << " " << c->rotation.x << " " << c->rotation.y << " " << c->rotation.z << " " 
     << c->near_plane << " " << c->far_plane << " " << c->fov << " " << c->aspect_ratio << "\n";
