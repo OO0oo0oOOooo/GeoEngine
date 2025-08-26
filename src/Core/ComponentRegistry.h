@@ -34,11 +34,11 @@ class ComponentRegistry {
         m_NextId++;
     }
 
-    void AddComponent(uint32_t entity, const void* component, std::string typeName) {
+    void AddComponent(uint32_t entity, void* component, std::string typeName) {
         uint32_t typeID = StrToId(typeName);
         if (typeID == INVALID_TYPE) { return; }
         if (typeID >= m_Components.size()) { return; }
-        sparse_set_insert(&m_Components[typeID], entity, &component);
+        sparse_set_insert(&m_Components[typeID], entity, component);
     }
 
     void* GetComponent(uint32_t entity, std::string typeName) {

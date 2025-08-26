@@ -39,7 +39,7 @@ class Scene {
     }
 
     template <typename T>
-    void AddComponent(uint32_t entity, const T& component, std::string typeName) {
+    void AddComponent(uint32_t entity, T component, std::string typeName) {
         m_Registry.AddComponent(entity, &component, typeName);
     }
 
