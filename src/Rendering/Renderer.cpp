@@ -12,8 +12,6 @@ Renderer::~Renderer() {
 }
 
 void Renderer::RenderMesh(const render_command& cmd) {
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
     glBindBuffer(GL_ARRAY_BUFFER, cmd.vertex_buffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cmd.index_buffer);
 

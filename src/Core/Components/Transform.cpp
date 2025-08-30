@@ -5,6 +5,8 @@
 #include <fstream>
 
 #include <glm/gtc/matrix_inverse.hpp>
+#include <glm/gtx/string_cast.hpp>
+
 #include "Core/ComponentRegistry.h"
 
 glm::mat4 transform_get_matrix(transform* transform) {
@@ -28,6 +30,16 @@ glm::vec3 transform_to_world_space(transform* transform, const glm::vec3& local_
     glm::mat4 local_to_world = transform_get_matrix(transform);
     glm::vec4 world_pos = local_to_world * glm::vec4(local_position, 1.0f);
     return glm::vec3(world_pos);
+}
+
+void transform_print(transform* transform) {
+    std::cout << "==========================" << "\n";
+    std::cout << "Position: " << glm::to_string(transform->position) << "\n";
+    std::cout << "Rotation: " << glm::to_string(transform->rotation) << "\n";
+    std::cout << "Scale: " << glm::to_string(transform->scale) << "\n";
+    std::cout << "Dirty?: " << transform->matrix_dirty << "\n";
+    std::cout << "Matrix: " << glm::to_string(transform->cached_matrix) << "\n";
+    std::cout << "==========================" << "\n";
 }
 
 void transform_save(const void* data, std::ofstream& file) {

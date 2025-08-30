@@ -26,6 +26,9 @@ void Application::Run() {
     while (!glfwWindowShouldClose(m_Window.GetNativeWindow())) {
         Time::Update();
         m_SceneManager.Update();
+
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
         m_SceneManager.Render(&m_Renderer);
 
         ImGui_ImplOpenGL3_NewFrame();

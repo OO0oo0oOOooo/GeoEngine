@@ -26,14 +26,11 @@ void Scene::Render(Renderer* renderer) {
         if (transformComp && renderComp) {
             mesh* mesh_r = rm->GetMesh(renderComp->mesh_handle);
             material* mat = rm->GetMaterial(renderComp->material_handle);
-
-            assert(mesh_r);
-            assert(mat);
-
             render_command cmd = mesh_create_render_command(mesh_r);
 
             glm::mat4 vp = get_vp_matrix(&m_ActiveCamera);
             glm::mat4 m = transform_get_matrix(transformComp);
+
             material_bind(mat, vp, m);
             renderer->RenderMesh(cmd);
         }
