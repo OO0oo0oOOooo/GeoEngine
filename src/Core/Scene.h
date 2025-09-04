@@ -28,11 +28,9 @@ class Scene {
     uint32_t CreateEntity();
     void DeleteEntity(uint32_t entity);
 
-    // TODO: could use typeid(T).name
     void* GetComponent(uint32_t entity, std::string typeName);
     void AddComponent(uint32_t entity, void* component, std::string typeName);
 
-    // TODO: could use typeid(T).name
     template <typename T>
     T* GetComponent(uint32_t entity, std::string typeName) {
         return static_cast<T*>(m_Registry.GetComponent(entity, typeName));
@@ -47,6 +45,4 @@ class Scene {
     camera m_ActiveCamera;
 
     static constexpr uint32_t INVALID_ENTITY = 0xFFFFFFFF;
-    uint32_t m_NextEntityID = 0;
-    std::vector<uint32_t> m_Entities;
 };

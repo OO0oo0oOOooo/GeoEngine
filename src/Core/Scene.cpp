@@ -19,7 +19,7 @@ void Scene::Update() {}
 void Scene::Render(Renderer* renderer) {
     ResourceManager* rm = ResourceManager::GetResourceManager();
 
-    for (uint32_t entity : m_Entities) {
+    for (uint32_t entity : m_Registry.m_Entities) {
         transform* transformComp = GetComponent<transform>(entity, "transform");
         renderable* renderComp = GetComponent<renderable>(entity, "renderable");
 
@@ -63,23 +63,12 @@ void Scene::Save() {
     std::string filePath = "Assets/Scene/scene0.txt";
     std::ofstream file(filePath);
     if (!file.is_open()) std::cerr << "Error opening Scene file: " << filePath << std::endl;
-    for (const auto& entity : m_Entities) {
+    for (const auto& entity : m_Registry.m_Entities) {
         entity_save(file);
         m_Registry.SaveComponents(entity, file);
     }
 
     file.close();
-}
-
-uint32_t Scene::CreateEntity() {
-    uint32_t entity = m_NextEntityID++;
-    m_Entities.push_back(entity);
-    return entity;
-}
-
-void Scene::DeleteEntity(uint32_t entity) {
-    m_Registry.RemoveAllComponents(entity);
-    m_Entities.erase(std::remove(m_Entities.begin(), m_Entities.end(), entity), m_Entities.end());
 }
 
 void* Scene::GetComponent(uint32_t entity, std::string typeName) {

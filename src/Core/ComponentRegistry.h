@@ -14,6 +14,7 @@ struct ComponentTypeInfo {
 class ComponentRegistry {
    public:
     static constexpr uint32_t INVALID_TYPE = 0xFFFFFFFF;
+    std::vector<uint32_t> m_Entities;
 
    public:
     void RegisterComponent(std::string name, size_t componentSize,
@@ -30,8 +31,19 @@ class ComponentRegistry {
             .size = componentSize,
         });
 
-        m_StrToId[name] = m_NextId;
-        m_NextId++;
+        m_StrToId[name] = m_NextTypeId;
+        m_NextTypeId++;
+    }
+
+    uint32_t CreateEntity() {
+        uint32_t entity = m_NextEntityId++;
+        m_Entities.push_back(entity);
+        return entity;
+    }
+
+    void DeleteEntity(uint32_t entity) {
+        RemoveAllComponents(entity);
+        m_Entities.erase(std::remove(m_Entities.begin(), m_Entities.end(), entity), m_Entities.end());
     }
 
     void AddComponent(uint32_t entity, void* component, std::string typeName) {
@@ -99,7 +111,8 @@ class ComponentRegistry {
     }
 
    private:
-    uint32_t m_NextId = 0;
+    uint32_t m_NextTypeId = 0;
+    uint32_t m_NextEntityId = 0;
     std::vector<sparse_set> m_Components;
     std::vector<std::function<void(const void*, std::ofstream&)>> m_Save;
     std::vector<std::function<void(std::string, void*)>> m_Load;
