@@ -15,21 +15,15 @@
 
 class Scene {
    public:
+    camera m_ActiveCamera;
     ComponentRegistry m_Registry;
 
    public:
     void Start();
     void Update();
-    void Render(Renderer* renderer);
 
     void Save();
     void Load();
-
-    uint32_t CreateEntity();
-    void DeleteEntity(uint32_t entity);
-
-    void* GetComponent(uint32_t entity, std::string typeName);
-    void AddComponent(uint32_t entity, void* component, std::string typeName);
 
     template <typename T>
     T* GetComponent(uint32_t entity, std::string typeName) {
@@ -42,7 +36,5 @@ class Scene {
     }
 
    private:
-    camera m_ActiveCamera;
-
     static constexpr uint32_t INVALID_ENTITY = 0xFFFFFFFF;
 };

@@ -10,15 +10,15 @@ struct vertex_attribute {
 
 struct vertex_layout {
     vertex_attribute attributes[8];  // Support up to 8 vertex attributes
-    uint32_t attribute_count;       // How many attributes are actually used
-    uint32_t stride;                // Total size of one vertex in bytes
+    uint32_t attribute_count;        // How many attributes are actually used
+    uint32_t stride;                 // Total size of one vertex in bytes
 };
 
 struct render_command {
     uint32_t vertex_buffer;    // OpenGL VBO handle
     uint32_t index_buffer;     // OpenGL EBO handle
-    uint32_t vertex_offset;  // Byte offset into vertex buffer
-    uint32_t index_offset;   // Element offset into index buffer
-    uint32_t index_count;    // Number of indices to draw
-    vertex_layout layout;     // How to interpret vertex data
+    uint32_t vertex_offset;    // Byte offset into vertex buffer
+    uint32_t index_offset;     // Element offset into index buffer
+    uint32_t index_count;      // Number of indices to draw
+    vertex_layout layout;      // How to interpret vertex data
 };

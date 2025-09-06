@@ -2,7 +2,7 @@
 
 #include <cstring>
 
-#include "Rendering/ArenaSlab.h"
+#include "../Util/ArenaSlab.h"
 
 #define SPARSE_SET_INVALID 0xFFFFFFFF
 

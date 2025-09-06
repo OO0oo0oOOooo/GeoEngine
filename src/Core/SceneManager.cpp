@@ -25,9 +25,5 @@ void SceneManager::Update() {
     m_ActiveScene->Update();
 }
 
-void SceneManager::Render(Renderer* renderer) {
-    m_ActiveScene->Render(renderer);
-}
-
 void SceneManager::Load(std::string path) {}
 void SceneManager::Switch(size_t index) {}

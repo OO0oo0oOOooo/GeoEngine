@@ -3,8 +3,7 @@
 #include "RenderCommand.h"
 #include "Renderer.h"
 
-void mesh_create_static(mesh* mesh, const uint8_t* vdata, uint32_t vsize, const uint8_t* idata,
-                        uint32_t isize, uint32_t icount) {
+void mesh_create_static(mesh* mesh, const uint8_t* vdata, uint32_t vsize, const uint8_t* idata, uint32_t isize, uint32_t icount) {
     mesh->vertex_buffer = 0;
     mesh->index_buffer = 0;
     mesh->vertex_count = vsize / 36;

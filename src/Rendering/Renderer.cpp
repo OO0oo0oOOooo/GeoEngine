@@ -17,8 +17,7 @@ void Renderer::RenderMesh(const render_command& cmd) {
 
     for (uint32_t i = 0; i < cmd.layout.attribute_count; i++) {
         const auto& attr = cmd.layout.attributes[i];
-        glVertexAttribPointer(attr.location, attr.component_count, attr.type, attr.normalized,
-                              cmd.layout.stride, (void*)attr.offset);
+        glVertexAttribPointer(attr.location, attr.component_count, attr.type, attr.normalized, cmd.layout.stride, (void*)attr.offset);
         glEnableVertexAttribArray(attr.location);
     }
 

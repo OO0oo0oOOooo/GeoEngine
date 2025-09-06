@@ -9,7 +9,6 @@ class SceneManager {
 
     void Start();
     void Update();
-    void Render(Renderer* renderer);
 
     void Load(std::string path);
     void Switch(size_t index);

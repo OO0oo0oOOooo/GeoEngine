@@ -2,6 +2,7 @@
 
 #include "Events/Broadcast.h"
 #include "Events/EventDefs.h"
+#include "GLFW/glfw3.h"
 
 Window::Window() {
     Init();
@@ -43,7 +44,19 @@ void Window::Init() {
     glfwSetWindowUserPointer(m_NativeWindow, this);
     // glfwSwapInterval(0); // VSync
 
-    glfwSetWindowSizeCallback(m_NativeWindow, [](GLFWwindow* window, int width, int height) {
+    // glfwSetWindowSizeCallback(m_NativeWindow, [](GLFWwindow* window, int width, int height) {
+    //     Window* win = static_cast<Window*>(glfwGetWindowUserPointer(window));
+    //     win->SetHeight(height);
+    //     win->SetWidth(width);
+    //     glViewport(0, 0, width, height);
+    //
+    //     edata8_u resize_data;
+    //     resize_data.f[0] = (float)width;
+    //     resize_data.f[1] = (float)height;
+    //     SystemEvents::broadcast(EVENT_WINDOW_RESIZE, &resize_data);
+    // });
+
+    glfwSetFramebufferSizeCallback(m_NativeWindow, [](GLFWwindow* window, int width, int height) {
         Window* win = static_cast<Window*>(glfwGetWindowUserPointer(window));
         win->SetHeight(height);
         win->SetWidth(width);
