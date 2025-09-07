@@ -6,13 +6,15 @@
 
 #include "Events/EventDefs.h"
 
-camera camera_init(glm::vec3 position, glm::quat rotation, float near_plane, float far_plane) {
+camera camera_init(glm::vec3 position, glm::quat rotation, float width, float height, float near_plane, float far_plane) {
     glm::mat4 v = glm::inverse(glm::translate(glm::mat4(1.0f), position));
-    glm::mat4 p = glm::ortho(0.0f, 1920.0f, 0.0f, 1080.0f, near_plane, far_plane);
+    glm::mat4 p = glm::ortho(0.0f, width, 0.0f, height, near_plane, far_plane);
 
     camera cam{
         .position = position,
         .rotation = rotation,
+        .width = width,
+        .height = height,
         .near_plane = near_plane,
         .far_plane = far_plane,
 
@@ -41,7 +43,10 @@ void set_window_size(void* context, void* data) {
     edata8_u* event = (edata8_u*)data;
     float width = event->f[0];
     float height = event->f[1];
-    cam->projection_matrix = glm::ortho(0.0f, width, 0.0f, height, cam->near_plane, cam->far_plane);
+
+    float square_size = std::max(width / 256, height / 256);
+
+    cam->projection_matrix = glm::ortho(0.0f, width / square_size, 0.0f, height / square_size, cam->near_plane, cam->far_plane);
     cam->matrix_dirty = true;
 }
 

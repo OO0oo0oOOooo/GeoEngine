@@ -9,11 +9,7 @@
 #include "Events/EventDefs.h"
 #include "Util/CSparseSet.h"
 
-void Scene::Start() {
-    camera_init();
-    SystemEvents::listen(EVENT_WINDOW_RESIZE, set_window_size, &m_ActiveCamera);
-}
-
+void Scene::Start() {}
 void Scene::Update() {}
 
 void Scene::Load() {

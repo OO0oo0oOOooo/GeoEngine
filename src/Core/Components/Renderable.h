@@ -11,7 +11,7 @@ struct renderable {
     resource_handle material_handle;
 };
 
-// TODO: cannot use old string handles
+// TODO: cannot use old string handles for saving and loading. Save file needs to keep a dependency list that tells the scene what resources to load.
 inline void renderable_load(std::string line, void* buffer) {
     renderable r {};
 

@@ -15,7 +15,7 @@
 
 class Scene {
    public:
-    camera m_ActiveCamera;
+    camera* m_ActiveCamera;
     ComponentRegistry m_Registry;
 
    public:
@@ -25,15 +25,15 @@ class Scene {
     void Save();
     void Load();
 
-    template <typename T>
-    T* GetComponent(uint32_t entity, std::string typeName) {
-        return static_cast<T*>(m_Registry.GetComponent(entity, typeName));
-    }
-
-    template <typename T>
-    void AddComponent(uint32_t entity, T component, std::string typeName) {
-        m_Registry.AddComponent(entity, &component, typeName);
-    }
+    // template <typename T>
+    // T* GetComponent(uint32_t entity, std::string typeName) {
+    //     return static_cast<T*>(m_Registry.GetComponent(entity, typeName));
+    // }
+    //
+    // template <typename T>
+    // void AddComponent(uint32_t entity, T component, std::string typeName) {
+    //     m_Registry.AddComponent(entity, &component, typeName);
+    // }
 
    private:
     static constexpr uint32_t INVALID_ENTITY = 0xFFFFFFFF;
