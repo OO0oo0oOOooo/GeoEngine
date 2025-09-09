@@ -42,7 +42,7 @@ void Window::Init() {
 
     // Callbacks
     glfwSetWindowUserPointer(m_NativeWindow, this);
-    // glfwSwapInterval(0); // VSync
+    glfwSwapInterval(1); // VSync
 
     // glfwSetWindowSizeCallback(m_NativeWindow, [](GLFWwindow* window, int width, int height) {
     //     Window* win = static_cast<Window*>(glfwGetWindowUserPointer(window));

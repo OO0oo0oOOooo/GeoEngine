@@ -43,8 +43,8 @@ shader* ResourceManager::GetShader(resource_handle handle) {
     uint16_t id = get_handle_id(handle);
     uint16_t ver = get_handle_meta(handle);
 
-    if (slots[id].version == ver) {
-        return (shader*)slots[id].data;
+    if (s_instance->slots[id].version == ver) {
+        return (shader*)s_instance->slots[id].data;
     }
 
     return nullptr;
@@ -54,8 +54,8 @@ texture* ResourceManager::GetTexture(resource_handle handle) {
     uint16_t id = get_handle_id(handle);
     uint16_t ver = get_handle_meta(handle);
 
-    if (slots[id].version == ver) {
-        return (texture*)slots[id].data;
+    if (s_instance->slots[id].version == ver) {
+        return (texture*)s_instance->slots[id].data;
     }
 
     return nullptr;
@@ -65,8 +65,8 @@ mesh* ResourceManager::GetMesh(resource_handle handle) {
     uint16_t id = get_handle_id(handle);
     uint16_t ver = get_handle_meta(handle);
 
-    if (slots[id].version == ver) {
-        return (mesh*)slots[id].data;
+    if (s_instance->slots[id].version == ver) {
+        return (mesh*)s_instance->slots[id].data;
     }
 
     return nullptr;
@@ -76,8 +76,8 @@ material* ResourceManager::GetMaterial(resource_handle handle) {
     uint16_t id = get_handle_id(handle);
     uint16_t ver = get_handle_meta(handle);
 
-    if (slots[id].version == ver) {
-        return (material*)slots[id].data;
+    if (s_instance->slots[id].version == ver) {
+        return (material*)s_instance->slots[id].data;
     }
 
     return nullptr;
@@ -85,32 +85,32 @@ material* ResourceManager::GetMaterial(resource_handle handle) {
 
 resource_handle ResourceManager::CreateMaterial(resource_handle shaderHandle,
                                                resource_handle textureHandle) {
-    uint16_t id = next_handle;
-    uint32_t handleValue = ((uint32_t)id << 16) | slots[id].version;
-    next_handle++;
+    uint16_t id = s_instance->next_handle;
+    uint32_t handleValue = ((uint32_t)id << 16) | s_instance->slots[id].version;
+    s_instance->next_handle++;
 
-    material* mat = (material*)arena_linear_alloc(&arena, sizeof(material));
+    material* mat = (material*)arena_linear_alloc(&s_instance->arena, sizeof(material));
     material_init(mat, shaderHandle, textureHandle);
 
-    slots[id].data = mat;
+    s_instance->slots[id].data = mat;
     return resource_handle{handleValue};
 }
 
 resource_handle ResourceManager::CreateMesh(std::vector<Vertex> vertices,
                                            std::vector<unsigned int> indices) {
-    uint16_t id = next_handle;
-    uint32_t handleValue = ((uint32_t)id << 16) | slots[id].version;
-    next_handle++;
+    uint16_t id = s_instance->next_handle;
+    uint32_t handleValue = ((uint32_t)id << 16) | s_instance->slots[id].version;
+    s_instance->next_handle++;
 
-    mesh* data = (mesh*)arena_linear_alloc(&arena, sizeof(mesh));
+    mesh* data = (mesh*)arena_linear_alloc(&s_instance->arena, sizeof(mesh));
 
     size_t vertex_size = sizeof(Vertex) * vertices.size();
     size_t index_size = sizeof(unsigned int) * indices.size();
 
     uint8_t* vb =
-        (uint8_t*)arena_linear_alloc(&arena_mesh_buffer, vertex_size);
+        (uint8_t*)arena_linear_alloc(&s_instance->arena_mesh_buffer, vertex_size);
     uint8_t* ib =
-        (uint8_t*)arena_linear_alloc(&arena_mesh_buffer, index_size);
+        (uint8_t*)arena_linear_alloc(&s_instance->arena_mesh_buffer, index_size);
 
     memcpy(vb, vertices.data(), vertex_size);
     memcpy(ib, indices.data(), index_size);
@@ -118,19 +118,19 @@ resource_handle ResourceManager::CreateMesh(std::vector<Vertex> vertices,
     mesh_create_static(data, vb, vertex_size, ib, index_size, indices.size());
     mesh_upload_to_gpu(data);
 
-    slots[id].data = data;
+    s_instance->slots[id].data = data;
     return resource_handle{handleValue};
 }
 
 resource_handle ResourceManager::CreateTexture(int width, int height) {
-    uint16_t id = next_handle;
-    uint32_t handleValue = ((uint32_t)id << 16) | slots[id].version;
-    next_handle++;
+    uint16_t id = s_instance->next_handle;
+    uint32_t handleValue = ((uint32_t)id << 16) | s_instance->slots[id].version;
+    s_instance->next_handle++;
 
     size_t size = (width * height) * (sizeof(uint8_t) * 4);
     texture* data =
-        (texture*)arena_linear_alloc(&arena, sizeof(texture));
-    uint8_t* buffer = (uint8_t*)arena_linear_alloc(&arena_texture_buffer, size);
+        (texture*)arena_linear_alloc(&s_instance->arena, sizeof(texture));
+    uint8_t* buffer = (uint8_t*)arena_linear_alloc(&s_instance->arena_texture_buffer, size);
 
     for (int i = 0; i < size; i += 4) {
         buffer[i] = 0xFF;      // Red
@@ -141,19 +141,19 @@ resource_handle ResourceManager::CreateTexture(int width, int height) {
 
     texture_init(data, width, height, buffer);
 
-    slots[id].data = data;
+    s_instance->slots[id].data = data;
     return resource_handle{handleValue};
 }
 
 resource_handle ResourceManager::LoadShader(std::string fileName) {
-    uint16_t id = next_handle;
-    uint32_t handleValue = ((uint32_t)id << 16) | slots[id].version;
-    next_handle++;
+    uint16_t id = s_instance->next_handle;
+    uint32_t handleValue = ((uint32_t)id << 16) | s_instance->slots[id].version;
+    s_instance->next_handle++;
 
-    shader* data = (shader*)arena_linear_alloc(&arena, sizeof(shader));
+    shader* data = (shader*)arena_linear_alloc(&s_instance->arena, sizeof(shader));
     shader_init(data, fileName.c_str());
 
-    slots[id].data = data;
+    s_instance->slots[id].data = data;
     return resource_handle{handleValue};
 }
 

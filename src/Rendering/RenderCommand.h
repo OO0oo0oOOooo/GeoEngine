@@ -15,10 +15,10 @@ struct vertex_layout {
 };
 
 struct render_command {
-    uint32_t vertex_buffer;    // OpenGL VBO handle
-    uint32_t index_buffer;     // OpenGL EBO handle
-    uint32_t vertex_offset;    // Byte offset into vertex buffer
-    uint32_t index_offset;     // Element offset into index buffer
-    uint32_t index_count;      // Number of indices to draw
-    vertex_layout layout;      // How to interpret vertex data
+    uint32_t vertex_buffer;  // OpenGL VBO handle
+    uint32_t index_buffer;   // OpenGL EBO handle
+    uint32_t vertex_offset;  // Byte offset into vertex buffer
+    uint32_t index_offset;   // Element offset into index buffer
+    uint32_t index_count;    // Number of indices to draw
+    vertex_layout layout;    // How to interpret vertex data
 };

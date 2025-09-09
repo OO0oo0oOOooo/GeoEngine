@@ -16,8 +16,6 @@ Application::~Application() {
 void Application::Run() {
     m_SceneManager.Start();
 
-    AddRenderSystem(default_render);
-
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
@@ -28,16 +26,11 @@ void Application::Run() {
 
     while (!glfwWindowShouldClose(m_Window.GetNativeWindow())) {
         Time::Update();
-
-        for (size_t i = 0; i < m_UpdateSystems.size(); i++) {
-            m_UpdateSystems[i](m_SceneManager.GetActiveScene());
-        }
+        m_SceneManager.Update();
 
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-        for (size_t i = 0; i < m_UpdateSystems.size(); i++) {
-            m_RenderSystems[i](m_SceneManager.GetActiveScene(), &m_Renderer);
-        }
+        m_SceneManager.Render(&m_Renderer);
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();

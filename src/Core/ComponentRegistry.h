@@ -39,35 +39,6 @@ class ComponentRegistry {
         m_NextTypeId++;
     }
 
-    // void RegisterComponent(std::string name, size_t componentSize,
-    //                        void (*save)(const void* data, std::ofstream&),
-    //                        void (*load)(std::string, void*)) {
-    //     sparse_set ss;
-    //     sparse_set_init(&ss, 1024 * 2024, componentSize);
-    //
-    //     m_Components.push_back(ss);
-    //     m_Save.push_back(save);
-    //     m_Load.push_back(load);
-    //     m_Info.push_back(ComponentTypeInfo{
-    //         .name = name,
-    //         .size = componentSize,
-    //     });
-    //
-    //     m_StrToId[name] = m_NextTypeId;
-    //     m_NextTypeId++;
-    // }
-
-    uint32_t CreateEntity() {
-        uint32_t entity = m_NextEntityId++;
-        m_Entities.push_back(entity);
-        return entity;
-    }
-
-    void DeleteEntity(uint32_t entity) {
-        RemoveAllComponents(entity);
-        m_Entities.erase(std::remove(m_Entities.begin(), m_Entities.end(), entity), m_Entities.end());
-    }
-
     template <typename T>
     void AddComponent(uint32_t entity, T component) {
         std::string typeName = typeid(T).name();
@@ -97,27 +68,6 @@ class ComponentRegistry {
         if (typeID >= m_Components.size()) { return; }
         sparse_set_remove(&m_Components[typeID], entity);
     }
-
-    // void AddComponent(uint32_t entity, void* component, std::string typeName) {
-    //     uint32_t typeID = StrToId(typeName);
-    //     if (typeID == INVALID_TYPE) { return; }
-    //     if (typeID >= m_Components.size()) { return; }
-    //     sparse_set_insert(&m_Components[typeID], entity, component);
-    // }
-    //
-    // void* GetComponent(uint32_t entity, std::string typeName) {
-    //     uint32_t typeID = StrToId(typeName);
-    //     if (typeID == INVALID_TYPE) { return nullptr; }
-    //     if (typeID >= m_Components.size()) { return nullptr; }
-    //     return sparse_set_get(&m_Components[typeID], entity);
-    // }
-    //
-    // void RemoveComponent(uint32_t entity, std::string typeName) {
-    //     uint32_t typeID = StrToId(typeName);
-    //     if (typeID == INVALID_TYPE) { return; }
-    //     if (typeID >= m_Components.size()) { return; }
-    //     sparse_set_remove(&m_Components[typeID], entity);
-    // }
 
     void RemoveAllComponents(uint32_t entity) {
         for (sparse_set& ss : m_Components) {
@@ -154,12 +104,15 @@ class ComponentRegistry {
         }
     }
 
-    uint32_t StrToId(std::string type) {
-        if (!m_StrToId.contains(type)) {
-            return INVALID_TYPE;
-        }
+    uint32_t CreateEntity() {
+        uint32_t entity = m_NextEntityId++;
+        m_Entities.push_back(entity);
+        return entity;
+    }
 
-        return m_StrToId[type];
+    void DeleteEntity(uint32_t entity) {
+        RemoveAllComponents(entity);
+        m_Entities.erase(std::remove(m_Entities.begin(), m_Entities.end(), entity), m_Entities.end());
     }
 
    private:
@@ -170,4 +123,34 @@ class ComponentRegistry {
     std::vector<std::function<void(std::string, void*)>> m_Load;
     std::vector<ComponentTypeInfo> m_Info;
     std::unordered_map<std::string, uint32_t> m_StrToId;
+
+   private:
+    uint32_t StrToId(std::string type) {
+        if (!m_StrToId.contains(type)) {
+            return INVALID_TYPE;
+        }
+
+        return m_StrToId[type];
+    }
 };
+
+    // void AddComponent(uint32_t entity, void* component, std::string typeName) {
+    //     uint32_t typeID = StrToId(typeName);
+    //     if (typeID == INVALID_TYPE) { return; }
+    //     if (typeID >= m_Components.size()) { return; }
+    //     sparse_set_insert(&m_Components[typeID], entity, component);
+    // }
+    //
+    // void* GetComponent(uint32_t entity, std::string typeName) {
+    //     uint32_t typeID = StrToId(typeName);
+    //     if (typeID == INVALID_TYPE) { return nullptr; }
+    //     if (typeID >= m_Components.size()) { return nullptr; }
+    //     return sparse_set_get(&m_Components[typeID], entity);
+    // }
+    //
+    // void RemoveComponent(uint32_t entity, std::string typeName) {
+    //     uint32_t typeID = StrToId(typeName);
+    //     if (typeID == INVALID_TYPE) { return; }
+    //     if (typeID >= m_Components.size()) { return; }
+    //     sparse_set_remove(&m_Components[typeID], entity);
+    // }

@@ -21,16 +21,16 @@ class ResourceManager {
     static ResourceManager* GetResourceManager();
 
     void* GetResource(resource_handle handle);
-    mesh* GetMesh(resource_handle handle);
-    shader* GetShader(resource_handle handle);
-    texture* GetTexture(resource_handle handle);
-    material* GetMaterial(resource_handle handle);
+    static mesh* GetMesh(resource_handle handle);
+    static shader* GetShader(resource_handle handle);
+    static texture* GetTexture(resource_handle handle);
+    static material* GetMaterial(resource_handle handle);
 
-    resource_handle CreateMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices);
-    resource_handle CreateTexture(int width, int height);
-    resource_handle CreateMaterial(resource_handle shaderHandle, resource_handle textureHandle);
+    static resource_handle CreateMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices);
+    static resource_handle CreateTexture(int width, int height);
+    static resource_handle CreateMaterial(resource_handle shaderHandle, resource_handle textureHandle);
 
-    resource_handle LoadShader(std::string fileName);
+    static resource_handle LoadShader(std::string fileName);
 
     // void UnloadMesh(resource_handle handle);
     // void UnloadShader(resource_handle handle);
